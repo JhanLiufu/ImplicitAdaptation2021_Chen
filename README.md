@@ -15,6 +15,8 @@ The Controller Experiment, second part of the paradigm, focuses on the control f
 
 The task in this part involves human subjects sitting in exactly the same environment as in the predictor experiment and reaching for visual targets displayed. Endpoint error feedback is provided at the end of each trial, and no online feedback is provided. The Controller Experiment consists of three blocks; the **Familiarization block**, **No Visual Feedback Block**, and **Mirror Reversal Block** corresponding to ```P_0_FAMI```, ```P_0_NVF``` and ```P_0_TEST``` matlab files respectively. The No Visual Feedback block provides no endpoint error feedback in order to assess the subjects' baseline bias, and in Mirror Reversal Block subjects were required to reach towards the mirror-reversed position of the visual target displayed.
 
+---
+
 ## Run the Code
 1. When running the experiment with psychtoolbox, change directory to the Controller folder since images in there are used. Type in the terminal ```cd Controller```
 2. When running the experiment with psychtoolbox, change directory to the Predictor folder since images in there are used. Type in the terminal ```cd Predictor```
