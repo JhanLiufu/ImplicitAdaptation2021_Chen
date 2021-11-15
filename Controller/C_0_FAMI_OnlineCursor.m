@@ -1,6 +1,6 @@
 %% This code is for no-perturbation controller experiment.
-%% Feedback type: endpoint feedback
-% By Mengzhan Liufu, July 2021 at Chen Juan's Lab at South China Normal
+%% Feedback type: online cursor feedback
+% By Mengzhan Liufu, November 2021 at Chen Juan's Lab at South China Normal
 % University, Guangzhou.
 
 %@targetarray - generating random targets, one per three degrees
@@ -46,19 +46,12 @@ currentparticipant = "currentparticipant";
 cd(currentparticipant);
 currentparticipant = pwd;
 
-%% Familiarization Block 1 - 2
 writeDigitalPin(a, 'D10', 0); % open the goggle
 cd(currentfolder);
 targetarray = round(rand(1,30)*17)+1;
 
-familiarization_jpg = imread('familiarization.jpg');
-familiarization_img = Screen('MakeTexture',wPtr,familiarization_jpg);
-Screen('DrawTexture',wPtr,familiarization_img);
-Screen('Flip',wPtr);
-WaitSecs(2);
-
 for j = 1:30
-    % Show instruction note
+    %% Show instruction note
     target_jpg = imread('img5.jpg');
     target_img = Screen('MakeTexture',wPtr,target_jpg);
     Screen('DrawTexture',wPtr,target_img);
@@ -67,6 +60,7 @@ for j = 1:30
     KbStrokeWait;
     writeDigitalPin(a, 'D10', 1); % close
     
+    %% Active hand relocation
     [x_find,y_find] = GetMouse(wPtr);
     d_find =sqrt((x_find-xCenter)^2+(y_find-yCenter)^2);
     while 1
@@ -109,7 +103,8 @@ for j = 1:30
     counter = 1;
 
     writeDigitalPin(a, 'D10', 0); %open the goggle
-    
+   
+    %% Reaching out with veridical online visual feedback
     while d <= 546.5
         Screen('FillOval',wPtr,[0,0,255],[x1-10,2*yCenter-y1-10,x1+10,2*yCenter-y1+10]);
         Screen('FrameArc',wPtr,0,[xCenter-546.5,yCenter-546.5,xCenter+546.5,yCenter+546.5],0,360,5);
@@ -120,6 +115,9 @@ for j = 1:30
         Screen('Flip',wPtr,[],1,[],[]);
 
         [x,y] = GetMouse(wPtr);
+        % in order to provide veridical feedback in mirror, hand position
+        % flipped first
+        Screen('FillOval',wPtr,[255,0,0],[x-10,2*yCenter-y-10,x+10,2*yCenter-y+10]);
         trialtrajectory(counter, 1)= counter;
         trialtrajectory(counter, 2)= x;
         trialtrajectory(counter, 3)= y;
@@ -127,22 +125,6 @@ for j = 1:30
 
         d=sqrt((x-xCenter)^2+(y-yCenter)^2);
     end
-
-    ti_jpg = imread('targetinstruction.jpg');
-    ti_img = Screen('MakeTexture',wPtr,ti_jpg);
-    Screen('DrawTexture',wPtr,ti_img);
-    Screen('Flip',wPtr);
-    WaitSecs(2);
-
-    Screen('FrameArc',wPtr,0,[xCenter-546.5,yCenter-546.5,xCenter+546.5,yCenter+546.5],0,360,5);
-    Screen('DrawLine',wPtr,[0,0,0],xCenter,yCenter,xCenter+546.5*cosd(15),yCenter-546.5*sind(15),5);
-    Screen('DrawLine',wPtr,[0,0,0],xCenter,yCenter,xCenter+546.6*cosd(15),yCenter+546.5*sind(15),5);
-    Screen('DrawLine',wPtr,[0,0,0],xCenter,yCenter,xCenter-546.5*cosd(15),yCenter-546.5*sind(15),5);
-    Screen('DrawLine',wPtr,[0,0,0],xCenter,yCenter,xCenter-546.6*cosd(15),yCenter+546.5*sind(15),5);
-    Screen('FillOval',wPtr,[0,0,255],[x1-10,2*yCenter-y1-10,x1+10,2*yCenter-y1+10]);
-    Screen('DrawLine',wPtr,[255,0,0],xCenter,yCenter,x,2*yCenter-y,5);
-    Screen('Flip',wPtr);
-    WaitSecs(2);
 
     cd(currentparticipant);
     save(trialfilename, 'trialtrajectory', 'targetarray');

@@ -1,4 +1,5 @@
 %% This code is for no-perturbation controller experiment.
+%% Feedback type: endpoint feedback
 % By Mengzhan Liufu, July 2021 at Chen Juan's Lab at South China Normal
 % University, Guangzhou.
 
