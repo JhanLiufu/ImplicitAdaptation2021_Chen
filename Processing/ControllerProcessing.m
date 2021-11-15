@@ -13,6 +13,7 @@ belowtarget = zeros(210, 1);
 %% Plot Overlapping Trajectories
 figure;
 hold on;
+%% Baseline+NVF Blocks
 for i = 1:3
     currentfolder = pwd;
     currentblock = strcat('Block',num2str(i));
@@ -57,6 +58,7 @@ for i = 1:3
     cd(currentfolder);
 end
 
+%% Perturbation blocks
 for i = 4:7
     currentfolder = pwd;
     currentblock = strcat('Block',num2str(i));
