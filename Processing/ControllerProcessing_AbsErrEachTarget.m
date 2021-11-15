@@ -1,13 +1,11 @@
 %% This code is for Controller data processing, changes of absolute error for each target.
+%% To be placed in the Controller folder in each target's folder
 % Written by Mengzhan Liufu at UChicago. 
 xCenter = 960;
 yCenter = 540;
 finaldata = [0 0];
 targetdata = [0 0];
 error_by_target = zeros(18, 1);
-
-% figure;
-% hold on;
 
 for i = 1:3
     currentfolder = pwd;
