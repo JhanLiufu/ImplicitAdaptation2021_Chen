@@ -20,3 +20,4 @@ The task in this part involves human subjects sitting in exactly the same enviro
 ## Run the Code
 1. When running the experiment with psychtoolbox, change directory to the Controller folder since images in there are used. Type in the terminal ```cd Controller```
 2. When running the experiment with psychtoolbox, change directory to the Predictor folder since images in there are used. Type in the terminal ```cd Predictor```
+3. For data processing and analysis codes, if the code deals with data from an individual subejct, change directory to the folder of that particular subject. If it is across-subject analysis, cd to the directory that contains all subjects' data.
