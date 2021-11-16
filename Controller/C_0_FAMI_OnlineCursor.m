@@ -114,7 +114,6 @@ for j = 1:30
 %         Screen('DrawLine',wPtr,[0,0,0],xCenter,yCenter,xCenter-546.5*cosd(15),yCenter-546.5*sind(15),5);
 %         Screen('DrawLine',wPtr,[0,0,0],xCenter,yCenter,xCenter-546.6*cosd(15),yCenter+546.5*sind(15),5);
         Screen('FillOval',wPtr,[255,0,0],[x-10,2*yCenter-y-10,x+10,2*yCenter-y+10]);    
-        Screen('Flip',wPtr,[],1,[],[]);
 
         % in order to provide veridical feedback in mirror, hand position
         % flipped first
@@ -124,6 +123,7 @@ for j = 1:30
         counter = counter + 1;
 
         d=sqrt((x-xCenter)^2+(y-yCenter)^2);
+        Screen('Flip',wPtr,[],1,[],[]);
     end
 
     cd(currentparticipant);

@@ -112,8 +112,7 @@ for j = 1:30
 %         Screen('DrawLine',wPtr,[0,0,0],xCenter,yCenter,xCenter+546.6*cosd(15),yCenter+546.5*sind(15),5);
 %         Screen('DrawLine',wPtr,[0,0,0],xCenter,yCenter,xCenter-546.5*cosd(15),yCenter-546.5*sind(15),5);
 %         Screen('DrawLine',wPtr,[0,0,0],xCenter,yCenter,xCenter-546.6*cosd(15),yCenter+546.5*sind(15),5);
-        Screen('FillOval',wPtr,[255,0,0],[x1-10,y1-10,x1+10,y1+10]);
-        Screen('Flip',wPtr,[],1,[],[]);
+        Screen('FillOval',wPtr,[255,0,0],[x-10,y-10,x+10,y+10]);
 
         trialtrajectory(counter, 1)= counter;
         trialtrajectory(counter, 2)= x;
@@ -121,6 +120,7 @@ for j = 1:30
         counter = counter + 1;
 
         d=sqrt((x-xCenter)^2+(y-yCenter)^2);
+        Screen('Flip',wPtr,[],1,[],[]);
     end
     
     cd(currentparticipant);
