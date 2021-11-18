@@ -81,13 +81,28 @@ for m = 1:210
     avgsubject_abserr(1,m) = sum(allsubject_abserr(:,m))/subject_list_length;
 end
 
+%% Plot Absolute error averaged across all participants
 figure;
 title("Across Subject Averaged Absolute Error")
 plot(avgsubject_abserr);
 axis([0 210 0 20])
 
+%% Scatter absolute error points averaged across all participants
 figure;
 title("Across Subject Absolute Error Scatter")
 x = linspace(1,210,210);
 scatter(x,avgsubject_abserr)
 axis([0 210 0 20])
+
+%% Perform one-way ANOVA (to see whether baseline/NVF is dif from MR blocks)
+group = cell(1,210);
+
+for m = 1:90
+    group{1,m} = 'Baseline/NVF';
+end
+
+for k = 91:210
+    group{1,k} = 'Mirror Reversal';
+end
+
+[p,tbl,stats] = anova1(avgsubject_abserr,group);
