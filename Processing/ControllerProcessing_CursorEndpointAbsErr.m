@@ -165,10 +165,13 @@ for p = 1:3
     cd(currentdataset);
 end
 
+cd(root_dir);
+
 for m = 1:210 
     Cursor_avgsubject_abserr(1,m) = sum(Cursor_allsubject_abserr(:,m))/Cursor_subject_list_length;
 end
 
+% Plot absolute error
 figure;
 hold on;
 set(gca, 'linewidth', 1.1, 'fontsize', 16, 'fontname', 'times');
@@ -183,3 +186,21 @@ plot(Cursor_avgsubject_abserr,'ok-','linewidth',1.1,'markerfacecolor',[38, 188, 
 legend('Endpoint','Cursor')
 grid on;
 axis([0 210 0 25])
+
+% ANOVA analysis for Cursor reversal blocks and Endpoint reversal blocks
+Reversal_avgsubject_abserr = zeros(1,180);
+for k = 91:210
+    Reversal_avgsubject_abserr(k-90) = FPSC_avgsubject_abserr(k);
+    Reversal_avgsubject_abserr(k+30) = Cursor_avgsubject_abserr(k);
+end
+
+Reversal_group = cell(1,240);
+for m = 1:120
+    Reversal_group{1,m} = 'Endpoint Feedback Reversal';
+end
+
+for m = 121:240
+    Reversal_group{1,m} = 'Cursor Feedback Reversal';
+end
+
+[p,tbl,stats] = anova1(Reversal_avgsubject_abserr,Reversal_group);
