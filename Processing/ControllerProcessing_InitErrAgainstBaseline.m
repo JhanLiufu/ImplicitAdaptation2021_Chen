@@ -116,6 +116,7 @@ for p = 1:FPSC_subject_list_length
     Up_counter = 0;
     Down_counter = 0;
     for j = 1:30
+        n = target_reversal(j);
         currenttrial = strcat('Trial',num2str(i),'.mat');
         trajectory = cell2mat(struct2cell(load(currenttrial,'trialtrajectory')));
         trajsize = size(trajectory);
@@ -125,7 +126,6 @@ for p = 1:FPSC_subject_list_length
     
         baseline_sum_abserr = 0;
         baseline_sum_signederr = 0;
-        n = target_reversal(i);
         if n < 10
             targetx = xCenter+546.5*cosd(abs(n*3-15));
             targety = yCenter+546.5*sind(n*3-15);
@@ -144,7 +144,7 @@ for p = 1:FPSC_subject_list_length
             Up_reversal_sum_signederr = Up_reversal_sum_signederr + signederr;
             Up_counter = Up_counter + 1;
         else
-            Down_reversal_sum_abserr = Downreversal_sum_abserr + abserr;
+            Down_reversal_sum_abserr = Down_reversal_sum_abserr + abserr;
             Down_reversal_sum_signederr = Down_reversal_sum_signederr + signederr;
             Down_counter = Down_counter + 1;
         end
@@ -230,7 +230,7 @@ for p = 1:Cursor_subject_list_length
         finalx = trajectory(final,2) - xCenter;
         finaly = trajectory(final,3) - yCenter;
    
-        n = target_nvf(i);
+        n = target_reversal(i);
         if n < 10
             targetx = xCenter+546.5*cosd(abs(n*3-15));
             targety = yCenter+546.5*sind(n*3-15);
@@ -295,3 +295,4 @@ legend;
 xlabel('Signed Baseline Bias (Degree)');
 ylabel('Signed Average Initial Deviation (Degree)');
 grid on;
+
