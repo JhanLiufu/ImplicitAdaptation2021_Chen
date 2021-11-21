@@ -162,6 +162,7 @@ for i = 1:(FPSC_subject_list_length-1) % The last FPSC participant's behavior is
     plot(x,y_fitted,'color',RGB, 'linewidth',1.5)
     axis([-15 15 -30 30])
 end
+plot(Up_target_relative,Up_target_relative,'--','color',[169,169,169]/255)
 title('Endpoint Feedback: Up Targets')
 ylabel('Reach Direction Relative to Axis')
 %xlabel('Target Direction Relative to Axis')
@@ -179,6 +180,7 @@ for i = 1:(FPSC_subject_list_length-1)
     plot(x,y_fitted,'color',RGB, 'linewidth',1.5)
     axis([-15 15 -30 30])
 end
+plot(Down_target_relative,Down_target_relative,'--','color',[169,169,169]/255)
 title('Endpoint Feedback: Down Targets')
 %ylabel('Reach Direction Relative to Axis')
 %xlabel('Target Direction Relative to Axis')
@@ -195,6 +197,7 @@ for i = 1:Cursor_subject_list_length
     scatter(x,y,50,RGB,'filled','o')
     plot(x,y_fitted,'color',RGB,'linewidth',1.5)
 end
+plot(Up_target_relative,Up_target_relative,'--','color',[169,169,169]/255)
 title('Cursor Feedback: Up Targets')
 ylabel('Reach Direction Relative to Axis')
 %xlabel('Target Direction Relative to Axis')
@@ -211,6 +214,7 @@ for i = 1:Cursor_subject_list_length
     scatter(x,y,50,RGB,'filled','o')
     plot(x,y_fitted,'color',RGB,'linewidth',1.5)
 end
+plot(Down_target_relative,Down_target_relative,'--','color',[169,169,169]/255)
 title('Cursor Feedback: Down Targets')
 %ylabel('Reach Direction Relative to Axis')
 %xlabel('Target Direction Relative to Axis')
