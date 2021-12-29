@@ -1,0 +1,67 @@
+%% This Code is for Controller experiment
+%% Random presentation of 4 feedback types: 0, 5, 15, 30 degree clockwise rotation
+% By Mengzhan Liufu, January 2022 at UChicago
+
+close all;
+clearvars;
+sca;
+commandwindow;
+
+%% Set up Arduino at COM4
+a = arduino('COM4', 'Uno');
+writeDigitalPin(a, 'D10', 1); % close
+
+%% Set up keys
+KbName('UnifyKeyNames');
+SpaceKey=KbName('space');
+EscapeKey=KbName('ESCAPE');
+RestrictKeysForKbCheck([EscapeKey,SpaceKey]);
+
+%% Open up the window
+HideCursor;
+PsychDefaultSetup(2);
+AssertOpenGL;
+screenNumber = max(Screen('Screens'));
+[wPtr,rect]=Screen('OpenWindow',0);
+[xCenter,yCenter] = WindowCenter(wPtr);
+
+%% Save Data
+currentfolder = pwd;
+currentparticipant = "currentparticipant";
+mkdir currentparticipant;
+cd(currentparticipant);
+currentparticipant = pwd;
+
+writeDigitalPin(a, 'D10', 0); % open the goggle
+cd(currentfolder);
+
+% ---------------------- function scripts ------------------------------
+
+function [x_rot, y_rot] = rotate(x, y, degree)
+    %param x: original x coord
+    %param y: original y coord
+    %param degree: rotate clockwise by * degrees
+    %return [x_rot, y_rot]: [x, y] rotated around Center by * degree
+    x_c = abs(x-xCenter);
+    y_c = abs(y-yCenter);
+    hand_angle = atand(x_c/y_c);
+    base_angle = (180-degree)/2;
+    base_length = (546.5*sind(degree/2))*2;
+    if (x>=xCenter && y>=yCenter)
+        calc_angle = 180-base_angle-(90-hand_angle);
+        x_rot = x - base_length*sind(calc_angle);
+        y_rot = y + base_length*cosd(calc_angle);
+    elseif (x>xCenter && y<yCenter)
+        calc_angle = 180-base_angle-hand_angle;
+        x_rot = x + base_length*cosd(calc_angle);
+        y_rot = y + base_length*sind(calc_angle);
+    elseif (x<xCenter && y>yCenter)
+        calc_angle = 180-base_angle-hand_angle;
+        x_rot = x - base_length*cosd(calc_angle);
+        y_rot = y - base_length*sind(calc_angle);
+    else
+        calc_angle = 180-base_angle-(90-hand_angle);
+        x_rot = x + base_length*sind(calc_angle);
+        y_rot = y - base_length*cosd(calc_angle);
+    end
+end
