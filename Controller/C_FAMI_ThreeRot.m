@@ -128,7 +128,7 @@ for i = 1:4
             [x,y] = GetMouse(wPtr);
             d=sqrt((x-xCenter)^2+(y-yCenter)^2);
             if d >= 95
-                Screen('FillOval',wPtr,[0,0,255],[target_x,target_y-10,target_x+10,target_y+10]);
+                Screen('FillOval',wPtr,[0,0,255],[target_x-10,target_y-10,target_x+10,target_y+10]);
                 if hasSoundCue == 1
                     [stimulusaudio, frequency] = audioread('1.wav');
                     sound(stimulusaudio, frequency);
@@ -155,7 +155,7 @@ for i = 1:4
             Screen('Flip',wPtr);
         end
 
-        
+        Screen('Flip',wPtr);
         WaitSecs(2);
         
         %% Endpoint feedback
