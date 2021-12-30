@@ -124,11 +124,27 @@ for i = 1:4
 
         writeDigitalPin(a, 'D10', 0); % open the goggle
         
-        %% Stage 1 Reach: veridical feedback on, target off
-        while d <= 189
-            Screen('FrameArc',wPtr,0,[xCenter-546.5,yCenter-546.5,xCenter+546.5,yCenter+546.5],0,360,5);
+        while d <= 546.5
             [x,y] = GetMouse(wPtr);
-            [x_rot, y_rot] = rotate(2*xCenter-x, 2*yCenter-y, rot_degree);
+            d=sqrt((x-xCenter)^2+(y-yCenter)^2);
+            if d >= 95
+                Screen('FillOval',wPtr,[0,0,255],[target_x,target_y-10,target_x+10,target_y+10]);
+                if hasSoundCue == 1
+                    [stimulusaudio, frequency] = audioread('1.wav');
+                    sound(stimulusaudio, frequency);
+                    hasSoundCue = 0;
+                end
+            end
+            Screen('FrameArc',wPtr,0,[xCenter-546.5,yCenter-546.5,xCenter+546.5,yCenter+546.5],0,360,5);
+            Screen('FillArc',wPtr,[0,255,0],[xCenter-95,yCenter-95,xCenter+95,yCenter+95],0,360);
+            if target_num <= 5
+                Screen('DrawLine',wPtr,[0,0,0],xCenter,yCenter,xCenter+546.5*cosd(20),yCenter-546.5*sind(20),5);
+                Screen('DrawLine',wPtr,[0,0,0],xCenter,yCenter,xCenter+546.6*cosd(20),yCenter+546.5*sind(20),5);
+            else
+                Screen('DrawLine',wPtr,[0,0,0],xCenter,yCenter,xCenter-546.5*cosd(20),yCenter-546.5*sind(20),5);
+                Screen('DrawLine',wPtr,[0,0,0],xCenter,yCenter,xCenter-546.6*cosd(20),yCenter+546.5*sind(20),5);
+            end
+            [x_rot, y_rot] = rotate(x, 2*yCenter-y, rot_degree, d, xCenter, yCenter);
             Screen('FillOval',wPtr,[255,0,0],[x_rot-10,y_rot-10,x_rot+10,y_rot+10]);
 
             trialtrajectory(counter, 1)= counter;
@@ -136,31 +152,9 @@ for i = 1:4
             trialtrajectory(counter, 3)= y;
             counter = counter + 1;
 
-            d=sqrt((x-xCenter)^2+(y-yCenter)^2);
-            %Screen('Flip',wPtr,[],1,[],[]);
             Screen('Flip',wPtr);
         end
 
-        [stimulusaudio, frequency] = audioread('1.wav');
-        sound(stimulusaudio, frequency);
-        
-        %% Stage 2 Reach: veridical feedback on, target on
-        while (d > 189 && d <= 546.5)
-            Screen('FrameArc',wPtr,0,[xCenter-546.5,yCenter-546.5,xCenter+546.5,yCenter+546.5],0,360,5);
-            Screen('FillOval',wPtr,[0,0,255],[x1-10,2*yCenter-y1-10,x1+10,2*yCenter-y1+10]);
-            [x,y] = GetMouse(wPtr);
-            [x_rot, y_rot] = rotate(2*xCenter-x, 2*yCenter-y, rot_degree);
-            Screen('FillOval',wPtr,[255,0,0],[x_rot-10,y_rot-10,x_rot+10,y_rot+10]);
-
-            trialtrajectory(counter, 1)= counter;
-            trialtrajectory(counter, 2)= x;
-            trialtrajectory(counter, 3)= y;
-            counter = counter + 1;
-
-            d=sqrt((x-xCenter)^2+(y-yCenter)^2);
-            %Screen('Flip',wPtr,[],1,[],[]);
-            Screen('Flip',wPtr);
-        end
         
         WaitSecs(2);
         
@@ -180,7 +174,7 @@ end
 
 % ---------------------- scripts ------------------------------
 
-function [x_rot, y_rot] = rotate(x, y, degree)
+function [x_rot, y_rot] = rotate(x, y, degree, distance, xCenter, yCenter)
     % Input mirror reversed GetMouse() coords, so subject always see
     % non-reversed clockwise rotated cursor feedback
     %param x: **mirror reversed** hand x coord
@@ -191,7 +185,7 @@ function [x_rot, y_rot] = rotate(x, y, degree)
     y_c = abs(y-yCenter);
     hand_angle = atand(x_c/y_c);
     base_angle = (180-degree)/2;
-    base_length = (546.5*sind(degree/2))*2;
+    base_length = (distance*sind(degree/2))*2;
     if (x>=xCenter && y>=yCenter)
         calc_angle = 180-base_angle-hand_angle;
         x_rot = x + base_length*cosd(calc_angle);
