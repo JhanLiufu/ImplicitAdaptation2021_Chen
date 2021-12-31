@@ -111,7 +111,7 @@ for i = 1:4
             end
         end
         
-        trialfilename = strcat("Trial",num2str(j));
+        trialfilename = strcat("Trial",num2str((i-1)*10+j));
         trialtrajectory = [0 0 0];
 
         SetMouse(xCenter,yCenter,wPtr);
@@ -127,16 +127,16 @@ for i = 1:4
         while d <= 546.5
             [x,y] = GetMouse(wPtr);
             d=sqrt((x-xCenter)^2+(y-yCenter)^2);
-            if d >= 95
-                Screen('FillOval',wPtr,[0,0,255],[target_x-10,2*yCenter-target_y-10,target_x+10,2*yCenter-target_y+10]);
+%            if d >= 95
+%                Screen('FillOval',wPtr,[0,0,255],[target_x-10,2*yCenter-target_y-10,target_x+10,2*yCenter-target_y+10]);
 %                 if hasSoundCue == 1
 %                     [stimulusaudio, frequency] = audioread('1.wav');
 %                     sound(stimulusaudio, frequency);
 %                     hasSoundCue = 0;
 %                 end
-            end
-            Screen('FrameArc',wPtr,0,[xCenter-546.5,yCenter-546.5,xCenter+546.5,yCenter+546.5],0,360,5);
-            Screen('FillArc',wPtr,[0,255,0],[xCenter-95,yCenter-95,xCenter+95,yCenter+95],0,360);
+%            end
+%            Screen('FrameArc',wPtr,0,[xCenter-546.5,yCenter-546.5,xCenter+546.5,yCenter+546.5],0,360,5);
+%            Screen('FillArc',wPtr,[0,255,0],[xCenter-95,yCenter-95,xCenter+95,yCenter+95],0,360);
 %             if target_num <= 5
 %                 Screen('DrawLine',wPtr,[0,0,0],xCenter,yCenter,xCenter+546.5*cosd(20),yCenter-546.5*sind(20),5);
 %                 Screen('DrawLine',wPtr,[0,0,0],xCenter,yCenter,xCenter+546.6*cosd(20),yCenter+546.5*sind(20),5);

@@ -111,7 +111,7 @@ for i = 1:4
             end
         end
         
-        trialfilename = strcat("Trial",num2str(j));
+        trialfilename = strcat("Trial",num2str((i-1)*10+j));
         trialtrajectory = [0 0 0];
 
         SetMouse(xCenter,yCenter,wPtr);
