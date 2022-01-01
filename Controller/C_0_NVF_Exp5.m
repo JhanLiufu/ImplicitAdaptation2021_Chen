@@ -2,7 +2,7 @@
 %% Feedback type: online cursor feedback and endpoint feedback
 % By Mengzhan Liufu, Januarary 2022 at Chen Juan's Lab at UChicago
 
-%@targetmarix - pseudorandom target matrix, 4 per set
+%@targetarray - pseudorandom target array, 4 per set
 %@trialtrajectory - storing trajectory points
 %@[x,y] - trajectory points
 %@[x1,y1] - target points
@@ -48,94 +48,92 @@ writeDigitalPin(a, 'D10', 0); % open the goggle
 cd(currentfolder);
 
 %% Prepare Target Matrix
-targetmatrix = zeros(10,4);
+targetarray = zeros(40,1);
 for i = 1:10
     targetsequence = randperm(4,4);
     for j = 1:4
-        if(targetsequence(j)==1)
-            targetmatrix(i,j) = 1;
-        elseif(targetsequence(j)==2)
-            targetmatrix(i,j) = 5;
-        elseif(targetsequence(j)==3)
-            targetmatrix(i,j) = 6;
-        else
-            targetmatrix(i,j) = 10;
+        switch targetsequence(j)
+            case 1
+                targetarray((i-1)*4+j) = 1;
+            case 2
+                targetarray((i-1)*4+j) = 5;
+            case 3
+                targetarray((i-1)*4+j) = 6;
+            otherwise
+                targetarray((i-1)*4+j) = 10;
         end
     end
 end
 
+for i =1:40
+    %% Show instruction note
+    target_jpg = imread('img5.jpg');
+    target_img = Screen('MakeTexture',wPtr,target_jpg);
+    Screen('DrawTexture',wPtr,target_img);
+    Screen('Flip',wPtr);
 
-for i=1:10
-    for j =1:4
-        %% Show instruction note
-        target_jpg = imread('img5.jpg');
-        target_img = Screen('MakeTexture',wPtr,target_jpg);
-        Screen('DrawTexture',wPtr,target_img);
-        Screen('Flip',wPtr);
+    KbStrokeWait;
+    writeDigitalPin(a, 'D10', 1); % close
 
-        KbStrokeWait;
-        writeDigitalPin(a, 'D10', 1); % close
-
-        %% Active hand relocation
-        [x_find,y_find] = GetMouse(wPtr);
-        d_find =sqrt((x_find-xCenter)^2+(y_find-yCenter)^2);
-        while 1
-            [touch,secs,KeyCode]=KbCheck;
-            if KeyCode(SpaceKey)
-               break;
-               % break out when space key is pressed
-            else
-                % recalculate d_find
-                [x_find,y_find] = GetMouse(wPtr);
-                d_find =sqrt((x_find-xCenter)^2+(y_find-yCenter)^2);
-                if d_find <= 50
-                    % play the sound stimulus when at center
-                    [stimulusaudio, frequency] = audioread('1.wav');
-                    sound(stimulusaudio, frequency);
-                end
+    %% Active hand relocation
+    [x_find,y_find] = GetMouse(wPtr);
+    d_find =sqrt((x_find-xCenter)^2+(y_find-yCenter)^2);
+    while 1
+        [touch,secs,KeyCode]=KbCheck;
+        if KeyCode(SpaceKey)
+           break;
+           % break out when space key is pressed
+        else
+            % recalculate d_find
+            [x_find,y_find] = GetMouse(wPtr);
+            d_find =sqrt((x_find-xCenter)^2+(y_find-yCenter)^2);
+            if d_find <= 50
+                % play the sound stimulus when at center
+                [stimulusaudio, frequency] = audioread('1.wav');
+                sound(stimulusaudio, frequency);
             end
         end
-
-        % Draw the Framework
-        n = targetmatrix(i,j);
-        if n <= 5
-            x1 = xCenter + 546.5*cosd(abs(7.5*(n-1)-15));
-            y1 = yCenter + 546.5*sind(7.5*(n-1)-15);
-        else
-            x1 = xCenter - 546.5*cosd(abs(7.5*(n-6)-15));
-            y1 = yCenter + 546.5*sind(7.5*(n-6)-15);
-        end
-
-        trialfilename = strcat("Trial",num2str((i-1)*10+j));
-        trialtrajectory = [0 0 0];
-        trialestimation = [0 0 0];
-
-        SetMouse(xCenter,yCenter,wPtr);
-        d = 0;
-        [x,y] = GetMouse(wPtr);
-
-        trialtrajectory(1,2) = x;
-        trialtrajectory(1,3) = y;
-        counter = 1;
-
-        writeDigitalPin(a, 'D10', 0); %open the goggle
-
-        %% Reaching out with veridical feedback
-        while d <= 546.5
-            [x,y] = GetMouse(wPtr);
-            d=sqrt((x-xCenter)^2+(y-yCenter)^2);
-            Screen('FillOval',wPtr,[0,0,255],[x1-10,2*yCenter-y1-10,x1+10,2*yCenter-y1+10]);
-            Screen('FrameArc',wPtr,0,[xCenter-546.5,yCenter-546.5,xCenter+546.5,yCenter+546.5],0,360,5);
-            Screen('Flip',wPtr)
-
-            trialtrajectory(counter, 1)= counter;
-            trialtrajectory(counter, 2)= x;
-            trialtrajectory(counter, 3)= y;
-            counter = counter + 1;
-        end
-          
-        cd(currentparticipant);
-        save(trialfilename, 'trialtrajectory', 'targetarray');
-        cd(currentfolder);
     end
+
+    % Draw the Framework
+    n = targetarray(i);
+    if n <= 5
+        x1 = xCenter + 546.5*cosd(abs(7.5*(n-1)-15));
+        y1 = yCenter + 546.5*sind(7.5*(n-1)-15);
+    else
+        x1 = xCenter - 546.5*cosd(abs(7.5*(n-6)-15));
+        y1 = yCenter + 546.5*sind(7.5*(n-6)-15);
+    end
+
+    trialfilename = strcat("Trial",num2str(i));
+    trialtrajectory = [0 0 0];
+    trialestimation = [0 0 0];
+
+    SetMouse(xCenter,yCenter,wPtr);
+    d = 0;
+    [x,y] = GetMouse(wPtr);
+
+    trialtrajectory(1,2) = x;
+    trialtrajectory(1,3) = y;
+    counter = 1;
+
+    writeDigitalPin(a, 'D10', 0); %open the goggle
+
+    %% Reaching out with no feedback
+    while d <= 546.5
+        [x,y] = GetMouse(wPtr);
+        d=sqrt((x-xCenter)^2+(y-yCenter)^2);
+        Screen('FillOval',wPtr,[0,0,255],[x1-10,2*yCenter-y1-10,x1+10,2*yCenter-y1+10]);
+        Screen('FrameArc',wPtr,0,[xCenter-546.5,yCenter-546.5,xCenter+546.5,yCenter+546.5],0,360,5);
+        Screen('Flip',wPtr)
+
+        trialtrajectory(counter, 1)= counter;
+        trialtrajectory(counter, 2)= x;
+        trialtrajectory(counter, 3)= y;
+        counter = counter + 1;
+    end
+      
+    cd(currentparticipant);
+    save(trialfilename, 'trialtrajectory', 'targetarray');
+    cd(currentfolder);
 end
