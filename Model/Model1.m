@@ -2,19 +2,22 @@
 % p = v + b
 clear;
 close all;
-rng(34);
-b = 0;
+rng(7);
+b = 0;    
 quit = 1;
-targetarray = randperm(25,20);
-targetarray(1) = -100;
-targetarray(2) = 200;
+targetarray = [0 0];
+for i = 1:10
+    targetarray(i) = randi(30);
+end 
+%targetarray(1) = 100;
+%targetarray(2) = -20;
 rand
 vmaparray = [0 0];
 proprioarray = [0 0];
 vonlinearray = [0 0];
 ponlinearray = [0 0];
-mcmap = zeros(length(targetarray));
-bmap = zeros(length(targetarray));
+mcmap = [0 0];
+bmap = [0 0];
 while quit < length(targetarray)
     target = targetarray(quit);
     h = rand;
@@ -30,15 +33,21 @@ while quit < length(targetarray)
     mcmap(quit) = mc;
     vonline = pmap - 30;
     vonlinearray(quit) = vonline;
-    if((pmap-vmap)~=(pmap-vonline))
-        b = b + (pmap - vonline)/10;
-    end
+    if (pmap-vmap)~=(pmap-vonline)
+         b = b + (pmap - vonline)/10;
+    end 
     bmap(quit) = b;
     quit = quit + 1;
 end
 figure;
-hold on;
+hold on ;
+abserr = [0 0];
+for i = 1:length(mcmap)
+    abserr(i) = abs(mcmap(i) - targetarray(i));
+end 
 plot(mcmap, '-o', 'Color', 'green');
 plot(targetarray, '-x', 'Color', 'red');
-plot(vonlinearray, '-*', 'Color', 'blue');
-plot(proprioarray, '-.', 'Color', 'yellow');
+figure;
+plot(abserr);
+%plot(vonlinearray, '-*', 'Color', 'black');
+%plot(proprioarray, '-.', 'Color', 'yellow');
