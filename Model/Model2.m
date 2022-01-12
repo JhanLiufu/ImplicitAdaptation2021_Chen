@@ -1,5 +1,4 @@
-%% Sensorimotor2022Jan11Model
-% p = v + b
+%% Sensorimotor 2022Jan11 Mode2 by Jhan
 clear;
 close all;
 rng(34);
