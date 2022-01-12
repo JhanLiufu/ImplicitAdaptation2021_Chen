@@ -1,20 +1,16 @@
-%% Sensorimotor2022Jan11Model
+%% Sensorimotor2022Jan11Model by Hokin
 % p = v + b
 clear;
 close all;
-rng(40);
-b = 0;
+rng(7);
+b = 0;    
 quit = 1;
 targetarray = [0 0];
-for i = 1:50
+for i = 1:20
     targetarray(i) = randi(30);
-end
-
-% targetarray = randperm(25,200);
-
-% targetarray(1) = -100;
-% targetarray(2) = 200;
-
+end 
+%targetarray(1) = 100;
+%targetarray(2) = -20;
 rand
 vmaparray = [0 0];
 proprioarray = [0 0];
@@ -35,26 +31,27 @@ while quit < length(targetarray)
     proprioarray(quit) = pmap;
     mc = pmap;
     mcmap(quit) = mc;
-    vonline = -pmap;
+    vonline = pmap - 30;
     vonlinearray(quit) = vonline;
-    
-    % Update algo
-    % b = pmap - vonline
-    b = pmap + (pmap - (vonline + b))/10 - vmap;
-    % b = vonline + b - vmap;
-    
+    %Update
+    if((pmap-vmap)~=(pmap-vonline))
+        b = b + (pmap - vonline)/10;
+    end
+
     bmap(quit) = b;
     quit = quit + 1;
 end
-figure;
+figure(1);
+hold on ;
+plot(mcmap, '-o', 'Color', 'green');
+plot(targetarray, '-x', 'Color', 'red');
+plot(vonlinearray, '-*', 'Color', 'blue');
+plot(proprioarray, '-.', 'Color', 'yellow');
+
+figure(2);
 hold on;
 abserr = [0 0];
 for i = 1:length(mcmap)
-    abserr(i) = mcmap(i) - targetarray(i);
-end
-plot(mcmap, '-o', 'Color', 'red');
-plot(targetarray, '-x', 'Color', 'green');
-plot(vonlinearray, '-*', 'Color', 'blue');
-figure;
+    abserr(i) = abs(vonlinearray(i) - targetarray(i));
+end 
 plot(abserr);
-% plot(proprioarray, '-.', 'Color', 'yellow');
