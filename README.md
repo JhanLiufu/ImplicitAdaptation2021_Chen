@@ -1,4 +1,4 @@
-# PredictorController_Chen
+# ImplicitAdaptation2021_Chen
 Code for Predictor-Controller Paradigm and data processing/analysis at Chen Lab, South China Normal University, Guangzhou. Members on our research team: Jingyue (Charles) Xu from UCSD, Xueqian (Hokin) Deng from JHU, Jhan Liufu from UCHicago and Chen Yang from SCNU. Our paradigm employs an in-and-out reaching task under mirror reversal perturbation to investigate the Predictor-Controller complex of human sensorimotor control.
 
 ---
