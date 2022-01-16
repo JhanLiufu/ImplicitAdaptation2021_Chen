@@ -1,5 +1,10 @@
-%% This code is for Controller data processing.
-% Updated Version by Hokin Deng, at John Hopkins. 
+%% This code is for collective data processing & presentation.
+% By Charles Xu @ UCSD, adopted from "Controller data processing" by Hokin
+% Deng at JHU
+
+clear
+close all
+
 xCenter = 960;
 yCenter = 540;
 finaldata = [0 0];
@@ -9,102 +14,161 @@ abovetarget = zeros(210, 1);
 belowfinal = zeros(210, 1);
 belowtarget = zeros(210, 1);
 
+filePath = matlab.desktop.editor.getActiveFilename;
+path = erase(filePath,'BUMProcessor.m');
+workingdirectory = path;
 
-%% Plot Overlapping Trajectories
-figure;
+%% Plot Relative Errors of All 3 Experiments & Overlapping Trajectories
+
+f1 = figure('Name','All3Experiments','NumberTitle','off');
 hold on;
+x = linspace(1,210,210);
+
+f2 = figure('Name','AllTrajectory','NumberTitle','off');
+hold on;
+
 for i = 1:3
-    currentfolder = pwd;
-    currentblock = strcat('Block',num2str(i));
-    cd(currentblock);
-    target = cell2mat(struct2cell(load('Trial1.mat','targetarray')));
-    for j = 1:30
-        currenttrial = strcat('Trial',num2str(j),'.mat');
-        trajectory = cell2mat(struct2cell(load(currenttrial,'trialtrajectory')));
-        trajsize = size(trajectory);
-        final = trajsize(1);
-        finalx = trajectory(final,2) - xCenter;
-        finaly = trajectory(final,3) - yCenter;
-        plot(trajectory(:,3),trajectory(:,2));
-        
-        
-        n = target(j);
-        if n < 10
-            targetx = xCenter+546.5*cosd(abs(n*3-15));
-            targety = yCenter+546.5*sind(n*3-15);
-        else
-            targetx = xCenter-546.5*cosd(abs((n-9)*3-15));
-            targety = yCenter+546.5*sind((n-9)*3-15);
+    cd(workingdirectory);
+    currentexp = strcat('Experiment', num2str(i));
+    cd(currentexp);
+    
+    for j = 1:8
+        currentsubj = num2str(j);
+        cd(currentsubj);
+
+        for k = 1:3
+            currentblock = strcat('Block',num2str(k));
+            cd(currentblock);
+            target = cell2mat(struct2cell(load('Trial1.mat','targetarray')));
+            
+            for l = 1:30
+                figure(f2)
+                
+                currenttrial = strcat('Trial',num2str(l),'.mat');
+                trajectory = cell2mat(struct2cell(load(currenttrial,'trialtrajectory')));
+                trajsize = size(trajectory);
+                final = trajsize(1);
+                finalx = trajectory(final,2) - xCenter;
+                finaly = trajectory(final,3) - yCenter;
+                plot(trajectory(:,3),trajectory(:,2));
+
+                n = target(l);
+                
+                if n < 10
+                    targetx = xCenter+546.5*cosd(abs(n*3-15));
+                    targety = yCenter+546.5*sind(n*3-15);
+                else
+                    targetx = xCenter-546.5*cosd(abs((n-9)*3-15));
+                    targety = yCenter+546.5*sind((n-9)*3-15);
+                end
+                
+                plot(targety,targetx,"o");
+                targetx = targetx - xCenter;
+                targety = targety - yCenter;
+                finaldata((k-1)*30+l) = atand(finaly/finalx);
+                targetdata((k-1)*30+l) = atand(targety/targetx);
+                
+                if (finalx > 0)
+                    abovefinal((k-1)*30+l) = atand(finaly/finalx);
+                end
+                
+                if (targetx > 0)
+                    abovetarget((k-1)*30+l) = atand(targety/targetx);
+                end
+                
+                if (finalx < 0)
+                    belowfinal((k-1)*30+l) = atand(finaly/finalx);
+                end
+                
+                if (targetx < 0)
+                    belowtarget((k-1)*30+l) = atand(targety/targetx);
+                end
+            end
+            cd ..;
         end
-        plot(targety,targetx,"o");
-        targetx = targetx - xCenter;
-        targety = targety - yCenter;
-        finaldata((i-1)*30+j) = atand(finaly/finalx);
-        targetdata((i-1)*30+j) = atand(targety/targetx);
-        if (finalx > 0)
-            abovefinal((i-1)*30+j) = atand(finaly/finalx);
-        end 
-        if (targetx > 0)
-            abovetarget((i-1)*30+j) = atand(targety/targetx);
-        end 
-        if (finalx < 0)
-            belowfinal((i-1)*30+j) = atand(finaly/finalx);
-        end 
-        if (targetx < 0)
-            belowtarget((i-1)*30+j) = atand(targety/targetx);
-        end 
+
+        for k = 4:7
+            currentblock = strcat('Block',num2str(k));
+            cd(currentblock);
+            target = cell2mat(struct2cell(load('Trial1.mat','targetarray')));
+            
+            for l = 1:30
+                currenttrial = strcat('Trial',num2str(l),'.mat');
+                trajectory = cell2mat(struct2cell(load(currenttrial,'trialtrajectory')));
+                trajsize = size(trajectory);
+                final = trajsize(1);
+                finalx = trajectory(final,2) - xCenter;
+                finaly = trajectory(final,3) - yCenter;
+                plot(trajectory(:,3),trajectory(:,2));
+
+                n = target(l);
+                
+                if n < 10
+                    targetx = xCenter+546.5*cosd(abs(n*3-15));
+                    targety = yCenter+546.5*sind(n*3-15);
+                else
+                    targetx = xCenter-546.5*cosd(abs((n-9)*3-15));
+                    targety = yCenter+546.5*sind((n-9)*3-15);
+                end
+                
+                plot(targety,targetx,"o");
+                targetx = targetx - xCenter;
+                
+                if i == 1
+                    targety = -(targety - yCenter);
+                else
+                    targety = targety - yCenter;
+                end
+                
+                finaldata((k-1)*30+l) = atand(finaly/finalx);
+                targetdata((k-1)*30+l) = atand(targety/targetx);
+                
+                if (finalx > 0)
+                    abovefinal((k-1)*30+l) = atand(finaly/finalx);
+                end 
+                
+                if (targetx > 0)
+                    abovetarget((k-1)*30+l) = atand(targety/targetx);
+                end 
+                
+                if (finalx < 0)
+                    belowfinal((k-1)*30+l) = atand(finaly/finalx);
+                end
+                
+                if (targetx < 0)
+                    belowtarget((k-1)*30+l) = atand(targety/targetx);
+                end 
+            end
+            cd ..;
+        end
+        
+        % Plot relative errors of all three experiments
+        figure(f1);
+        hold on;
+
+        relError = finaldata - targetdata;
+        
+        if i == 1
+            plot(x,relError,'-o','Color','red');
+        elseif i == 2
+            plot(x,relError,'-o','Color','green');
+        else
+            plot(x,relError,'-o','Color','blue');
+        end
+        cd ..;
+        
     end
-    cd(currentfolder);
+    cd ..;
+    
 end
 
-for i = 4:7
-    currentfolder = pwd;
-    currentblock = strcat('Block',num2str(i));
-    cd(currentblock);
-    target = cell2mat(struct2cell(load('Trial1.mat','targetarray')));
-    for j = 1:30
-        currenttrial = strcat('Trial',num2str(j),'.mat');
-        trajectory = cell2mat(struct2cell(load(currenttrial,'trialtrajectory')));
-        trajsize = size(trajectory);
-        final = trajsize(1);
-        finalx = trajectory(final,2) - xCenter;
-        finaly = trajectory(final,3) - yCenter;
-        plot(trajectory(:,3),trajectory(:,2));
-        
-        
-        n = target(j);
-        if n < 10
-            targetx = xCenter+546.5*cosd(abs(n*3-15));
-            targety = yCenter+546.5*sind(n*3-15);
-        else
-            targetx = xCenter-546.5*cosd(abs((n-9)*3-15));
-            targety = yCenter+546.5*sind((n-9)*3-15);
-        end
-        plot(targety,targetx,"o");
-        targetx = targetx - xCenter;
-        targety = targety - yCenter;
-        finaldata((i-1)*30+j) = atand(finaly/finalx);
-        targetdata((i-1)*30+j) = atand(targety/targetx);
-        if (finalx > 0)
-            abovefinal((i-1)*30+j) = atand(finaly/finalx);
-        end 
-        if (targetx > 0)
-            abovetarget((i-1)*30+j) = atand(targety/targetx);
-        end 
-        if (finalx < 0)
-            belowfinal((i-1)*30+j) = atand(finaly/finalx);
-        end 
-        if (targetx < 0)
-            belowtarget((i-1)*30+j) = atand(targety/targetx);
-        end 
-    end
-    cd(currentfolder);
-end
+cd(workingdirectory);
+
 axis equal;
 
 
 %% Absolute Plot of Position
-x = linspace(0,210,210);
+x = linspace(1,210,210);
 figure;
 plot(x, finaldata,"o", x, targetdata, "x");
 axis([0 210 -30 30]);
@@ -121,8 +185,8 @@ ylabel("Abs Degree");
 
 %% Plotting Error (anti-clock wise would be positive)
 error = [0 0];
-for i = 1:210
-error(i) = finaldata(i) - targetdata(i);
+for k = 1:210
+error(k) = finaldata(k) - targetdata(k);
 end
 
 figure;
@@ -139,8 +203,8 @@ abserr= [0 0];
 %             abserr(i) = 360 - abs(abs(error(i)));
 %     end
 % end
-for i = 1:210
-    abserr(i) = abs(error(i));
+for k = 1:210
+    abserr(k) = abs(error(k));
 end 
 
 figure;
@@ -151,8 +215,8 @@ axis([0 220 0 50]);
 
 %% Plot Above/Below Data
 figure;
-axis([0 220 -40 40]);
 plot(x, abovefinal, "*", x, abovetarget, "o", "Color","red");
+axis([0 220 -40 40]);
 hold on;
 plot(x, belowfinal, "*", x, belowtarget, "o", "Color","blue");
 xlabel("Trial Number");
@@ -272,6 +336,7 @@ xlabel("Correction Number");
 ylabel("Correction Signed");
 title("Above and Below Together Correction");
 axis([0 220 -60 60]);
+
 %% Section Specific Analysis
 blockfinaldata = zeros(7,30);
 blocktargetdata = zeros(7,30);
@@ -283,16 +348,15 @@ blockerroers = zeros(7,30);
 abblockerrors = zeros(7,30);
 beblockerrors = zeros(7,30);
 
-for i = 1:3
-    currentfolder = pwd;
-    currentblock = strcat('Block',num2str(i));
+for k = 1:3
+    currentblock = strcat('Block',num2str(k));
     cd(currentblock);
     target = cell2mat(struct2cell(load('Trial1.mat','targetarray')));
     figure; 
     hold on;
     title(currentblock);
-    for j = 1:30
-        currenttrial = strcat('Trial',num2str(j),'.mat');
+    for l = 1:30
+        currenttrial = strcat('Trial',num2str(l),'.mat');
         trajectory = cell2mat(struct2cell(load(currenttrial,'trialtrajectory')));
         trajsize = size(trajectory);
         final = trajsize(1);
@@ -300,7 +364,7 @@ for i = 1:3
         finaly =  trajectory(final,3) - yCenter;
         plot(trajectory(:,3),trajectory(:,2));
         
-        n = target(j);
+        n = target(l);
         if n < 10
             targetx = xCenter+546.5*cosd(abs(n*3-15));
             targety = yCenter+546.5*sind(n*3-15);
@@ -311,43 +375,42 @@ for i = 1:3
         plot(targety,targetx,"o");
         targetx = targetx - xCenter;
         targety = targety - yCenter;
-        blockfinaldata(i,j) = atand(finaly/finalx);
-        blocktargetdata(i,j) = atand(targety/targetx);
+        blockfinaldata(k,l) = atand(finaly/finalx);
+        blocktargetdata(k,l) = atand(targety/targetx);
         if (finalx > 0)
-            blockabovefinal(i,j) = atand(finaly/finalx);
+            blockabovefinal(k,l) = atand(finaly/finalx);
         end 
         if (targetx > 0)
-            blockabovetarget(i,j) = atand(targety/targetx);
+            blockabovetarget(k,l) = atand(targety/targetx);
         end 
         if (finalx < 0)
-            blockbelowfinal(i,j) = atand(finaly/finalx);
+            blockbelowfinal(k,l) = atand(finaly/finalx);
         end 
         if (targetx < 0)
-            blockbelowtarget(i,j) = atand(targety/targetx);
+            blockbelowtarget(k,l) = atand(targety/targetx);
         end 
     end
     axis equal;
-    cd(currentfolder);
+    cd(workingdirectory);
 end
 
-for i = 4:7
-    currentfolder = pwd;
-    currentblock = strcat('Block',num2str(i));
+for k = 4:7
+    currentblock = strcat('Block',num2str(k));
     cd(currentblock);
     target = cell2mat(struct2cell(load('Trial1.mat','targetarray')));
     figure; 
     hold on;
     title(currentblock);
-    for j = 1:30
-        currenttrial = strcat('Trial',num2str(j),'.mat');
+    for l = 1:30
+        currenttrial = strcat('Trial',num2str(l),'.mat');
         trajectory = cell2mat(struct2cell(load(currenttrial,'trialtrajectory')));
         trajsize = size(trajectory);
         final = trajsize(1);
         finalx = trajectory(final,2) - xCenter;
-        finaly =  trajectory(final,3) - yCenter;
+        finaly = trajectory(final,3) - yCenter;
         plot(trajectory(:,3),trajectory(:,2));
         
-        n = target(j);
+        n = target(l);
         if n < 10
             targetx = xCenter+546.5*cosd(abs(n*3-15));
             targety = yCenter+546.5*sind(n*3-15);
@@ -357,38 +420,45 @@ for i = 4:7
         end
         plot(targety,targetx,"o");
         targetx = targetx - xCenter;
-        targety = targety - yCenter;
-        blockfinaldata(i,j) = atand(finaly/finalx);
-        blocktargetdata(i,j) = atand(targety/targetx);
+        targety = -(targety - yCenter);
+        % edit later
+%         if i == 1
+%             targety = -(targety - yCenter);
+%         else
+%             targety = targety - yCenter;
+%         end
+        %
+        blockfinaldata(k,l) = atand(finaly/finalx);
+        blocktargetdata(k,l) = atand(targety/targetx);
         if (finalx > 0)
-            blockabovefinal(i,j) = atand(finaly/finalx);
+            blockabovefinal(k,l) = atand(finaly/finalx);
         end 
         if (targetx > 0)
-            blockabovetarget(i,j) = atand(targety/targetx);
+            blockabovetarget(k,l) = atand(targety/targetx);
         end 
         if (finalx < 0)
-            blockbelowfinal(i,j) = atand(finaly/finalx);
+            blockbelowfinal(k,l) = atand(finaly/finalx);
         end 
         if (targetx < 0)
-            blockbelowtarget(i,j) = atand(targety/targetx);
+            blockbelowtarget(k,l) = atand(targety/targetx);
         end 
     end
     axis equal;
-    cd(currentfolder);
+    cd(workingdirectory);
 end
 
 figure;
 hold on;
-for i = 1:3
-    x = linspace(0,30,30);
-    plot(x, blockfinaldata(i,:));   
-    plot(x, blocktargetdata(i,:), ':', 'LineWidth', 9);
+for k = 1:3
+    x = linspace(1,30,30);
+    plot(x, blockfinaldata(k,:));   
+    plot(x, blocktargetdata(k,:), ':', 'LineWidth', 9);
 end 
 figure;
 hold on;
-for i = 4:7
-    x = linspace(0,30,30);
-    plot(x, blockfinaldata(i,:));   
-    plot(x, blocktargetdata(i,:), ':', 'LineWidth', 9);
+for k = 4:7
+    x = linspace(1,30,30);
+    plot(x, blockfinaldata(k,:));   
+    plot(x, blocktargetdata(k,:), ':', 'LineWidth', 9);
 end 
 
