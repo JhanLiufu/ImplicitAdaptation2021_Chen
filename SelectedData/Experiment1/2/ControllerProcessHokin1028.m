@@ -82,7 +82,7 @@ for i = 4:7
         end
         plot(targety,targetx,"o");
         targetx = targetx - xCenter;
-        targety = targety - yCenter;
+        targety = yCenter - targety;
         finaldata((i-1)*30+j) = atand(finaly/finalx);
         targetdata((i-1)*30+j) = atand(targety/targetx);
         if (finalx > 0)
@@ -357,7 +357,7 @@ for i = 4:7
         end
         plot(targety,targetx,"o");
         targetx = targetx - xCenter;
-        targety = targety - yCenter;
+        targety = yCenter - targety;
         blockfinaldata(i,j) = atand(finaly/finalx);
         blocktargetdata(i,j) = atand(targety/targetx);
         if (finalx > 0)
