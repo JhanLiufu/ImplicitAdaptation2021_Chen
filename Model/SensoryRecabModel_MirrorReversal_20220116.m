@@ -68,8 +68,8 @@ for i=1:Ntrials
     signederror(i) = priopout(i) - vision(i);
     
     % learning update
-    w = w + eta*prioperror(i)*B(:,i_selected)';
-    %w = w + eta*visualerror(i)*B(:,i_selected)';
+    %w = w + eta*prioperror(i)*B(:,i_selected)';
+    w = w + eta*visualerror(i)*B(:,i_selected)';
     %w = w + eta*taskerror(i)*B(:,i_selected)';
 end
 
@@ -85,8 +85,8 @@ for i = 1:Ntrials
 end
 xlim([-xlim_right,xlim_right]);
 ylim([-ylim_up,ylim_up]);
-%title('Proprio-Visual Sensory Map (visual error)');
-title('Proprio-Visual Sensory Map (proprio error)');
+title('Proprio-Visual Sensory Map (visual error)');
+%title('Proprio-Visual Sensory Map (proprio error)');
 text(15-xlim_right,ylim_up-15,txt);
 caxis([0,Ntrials]);
 c=colorbar;
@@ -95,8 +95,8 @@ xlabel('Proprioceptive Cue');
 ylabel('Visual Cue');
 
 cd('Results\');
-saveas(gcf,'MirrorReversalModelSensoryMapChange_LauFoo_20220116_1.png');
-%saveas(gcf,'MirrorReversalModelSensoryMapChange_LauFoo_20220116_2.png');
+%saveas(gcf,'MirrorReversalModelSensoryMapChange_LauFoo_20220116_1.png');
+saveas(gcf,'MirrorReversalModelSensoryMapChange_LauFoo_20220116_2.png');
 cd(root_dir);
 
 reachbyblock = zeros(blocknum,blocksize);
@@ -120,12 +120,12 @@ end
 
 xlabel('Trial # (Within Block)');
 ylabel('Reach Direction');
-%title('Reach Direction By Block (with Visual Error)');
-title('Reach Direction By Block (with proprio error)');
+title('Reach Direction By Block (with Visual Error)');
+%title('Reach Direction By Block (with proprio error)');
 
 cd('Results\');
-saveas(gcf,'MirrorReversalModelReacByBlock_LauFoo_20220116_1.png');
-%saveas(gcf,'MirrorReversalModelReacByBlock_LauFoo_20220116_2.png');
+%saveas(gcf,'MirrorReversalModelReacByBlock_LauFoo_20220116_1.png');
+saveas(gcf,'MirrorReversalModelReacByBlock_LauFoo_20220116_2.png');
 cd(root_dir);
 
 figure;
@@ -137,13 +137,13 @@ ylim([-ylim_up,ylim_up]);
 plot(priopout,'Color','r');
 plot(vision,'Color','b');
 text(10,ylim_up-5,txt);
-title('Reaching movement across trial (with proprio error)');
-%title('Reaching movement across trial (with visual error)');
+%title('Reaching movement across trial (with proprio error)');
+title('Reaching movement across trial (with visual error)');
 legend('Hand angle','Target angle');
 
 cd('Results\');
-saveas(gcf,'MirrorReversalModelHandVersusTarget_LauFoo_20220116_1.png');
-%saveas(gcf,'MirrorReversalModelHandVersusTarget_LauFoo_20220116_2.png');
+%saveas(gcf,'MirrorReversalModelHandVersusTarget_LauFoo_20220116_1.png');
+saveas(gcf,'MirrorReversalModelHandVersusTarget_LauFoo_20220116_2.png');
 cd(root_dir);
 
 figure; 
@@ -151,12 +151,12 @@ hold on;
 plot(signederror);
 xlabel('Trial Number');
 ylabel('Error Degree (Clockwise is Positive)');
-title('Signed Error Across Trial (with proprio error)');
-%title('Signed Error Across Trial (with visual error)');
+%title('Signed Error Across Trial (with proprio error)');
+title('Signed Error Across Trial (with visual error)');
 
 cd('Results\');
-saveas(gcf,'MirrorReversalModelSignedError_LauFoo_20220116_1.png');
-%saveas(gcf,'MirrorReversalModelSignedError_LauFoo_20220116_2.png');
+%saveas(gcf,'MirrorReversalModelSignedError_LauFoo_20220116_1.png');
+saveas(gcf,'MirrorReversalModelSignedError_LauFoo_20220116_2.png');
 cd(root_dir);
 
 figure; 
@@ -164,12 +164,12 @@ hold on;
 plot(absoluteerror);
 xlabel('Trial Number');
 ylabel('Absolute Error Degree');
-title('Absolute Error Across Trial (with proprio error)');
-%title('Absolute Error Across Trial (with visual error)');
+%title('Absolute Error Across Trial (with proprio error)');
+title('Absolute Error Across Trial (with visual error)');
 
 cd('Results\');
-saveas(gcf,'MirrorReversalModelAbsoluteError_LauFoo_20220116_1.png');
-%saveas(gcf,'MirrorReversalModelAbsoluteError_LauFoo_20220116_2.png');
+%saveas(gcf,'MirrorReversalModelAbsoluteError_LauFoo_20220116_1.png');
+saveas(gcf,'MirrorReversalModelAbsoluteError_LauFoo_20220116_2.png');
 cd(root_dir);
 
 reachbytarget = zeros(9,1);
@@ -226,12 +226,12 @@ for i=1:blocknum
     y_fitted = polyval(p,linspace(-12,12,9));
     plot(linspace(-12,12,9),y_fitted,'Color',RGB,'LineWidth',1.5);
 end
-%title('Reach Direction versus Target Direction (with visual error)');
-title('Reach Direction versus Target Direction (with proprio error)');
+title('Reach Direction versus Target Direction (with visual error)');
+%title('Reach Direction versus Target Direction (with proprio error)');
 
 cd('Results\');
-saveas(gcf,'MirrorReversalModelReachByTarget_LauFoo_20220116_1.png');
-%saveas(gcf,'MirrorReversalModelReachByTarget_LauFoo_20220116_2.png');
+%saveas(gcf,'MirrorReversalModelReachByTarget_LauFoo_20220116_1.png');
+saveas(gcf,'MirrorReversalModelReachByTarget_LauFoo_20220116_2.png');
 cd(root_dir);
 
 figure; 
@@ -251,8 +251,8 @@ xlabel('Block Number');
 ylabel('Abs. of offset');
 
 cd('Results\');
-saveas(gcf,'MirrorReversalModelSlopeOffset_LauFoo_20220116_1.png');
-%saveas(gcf,'MirrorReversalModelSlopeOffset_LauFoo_20220116_2.png');
+%saveas(gcf,'MirrorReversalModelSlopeOffset_LauFoo_20220116_1.png');
+saveas(gcf,'MirrorReversalModelSlopeOffset_LauFoo_20220116_2.png');
 cd(root_dir);
 
 function y = sigmoid_saturation(x,sat_limit)
