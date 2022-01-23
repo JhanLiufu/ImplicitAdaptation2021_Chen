@@ -27,6 +27,7 @@ workingDirectory = erase(filePath,'BUMProcessor.m');
 
 f1 = figure('Name','ErrorAll3Experiments','NumberTitle','off');
 hold on;
+x = linspace(1,210,210);
 
 f2 = figure('Name','AllTrajectory','NumberTitle','off');
 hold on;
@@ -37,13 +38,13 @@ for i = 1:3 % 3 experiments
     cd(currentExp);
     
     for j = 1:8 % 8 participants per experiment
-        currentSubj = strcat(currentExp, num2str(j), '/');
+        currentSubj = strcat(currentExp, num2str(j));
         cd(currentSubj);
 
         for k = 1:7 % 7 blocks per participant
             
             if (k <= 3)
-                currentBlock = strcat(currentSubj,'Block',num2str(k), '/');
+                currentBlock = strcat(currentSubj,'Block',num2str(k));
                 cd(currentBlock);
                 target = cell2mat(struct2cell(load('Trial1.mat','targetarray')));
 
@@ -95,7 +96,7 @@ for i = 1:3 % 3 experiments
                 end
                 
             else
-                currentBlock = strcat(currentSubj, 'Block', num2str(k), '/');
+                currentBlock = strcat(currentSubj, 'Block',num2str(k));
                 cd(currentBlock);
                 target = cell2mat(struct2cell(load('Trial1.mat','targetarray')));
                 
@@ -162,8 +163,6 @@ for i = 1:3 % 3 experiments
 
         relError = parFinal - parTarget;
         
-        x = linspace(1,210,210);
-
         if i == 1
             plot(x,relError,'-o','Color','red');
         elseif i == 2
@@ -355,7 +354,7 @@ for i = 1:3 % 3 experiments
         beblockerrors = zeros(7,30);
 
         for k = 1:3
-            currentBlock = strcat(currentSubj, 'Block',num2str(k), '/');
+            currentBlock = strcat(currentSubj, 'Block',num2str(k));
             cd(currentBlock);
             target = cell2mat(struct2cell(load('Trial1.mat','targetarray')));
             figure; 
@@ -401,7 +400,7 @@ for i = 1:3 % 3 experiments
         end
 
         for k = 4:7
-            currentBlock = strcat(currentSubj, 'Block',num2str(k), '/');
+            currentBlock = strcat(currentSubj, 'Block',num2str(k));
             cd(currentBlock);
             target = cell2mat(struct2cell(load('Trial1.mat','targetarray')));
             figure; 
