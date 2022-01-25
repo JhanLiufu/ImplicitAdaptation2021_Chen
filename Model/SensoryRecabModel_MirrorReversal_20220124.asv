@@ -148,6 +148,13 @@ end
 anova_intp = interp1([min(min(anova_all)),max(max(anova_all))],[0,256],anova_all);
 image(anova_intp);
 txt = sprintf('%d Degree asymptote',sat_limit);
+yticks(sigma);
+% yticksname = NaN(1,length(sigma));
+% for i = 1:length(sigma)
+%     yticksname(1,i) = num2str(sigma(i));
+% end
+yticklabel(sigma);
+
 xlabel('Learning rate, \eta(\times10^{-4})');
 ylabel('Basis function width, \sigma(\circ)');
 title(txt);
