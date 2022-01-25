@@ -66,7 +66,7 @@ for i=1:Ntrials
     % Absolute and signed Error
     absoluteerror(i) = abs(priopout(i) - vision(i));
     signederror(i) = priopout(i) - vision(i);
-    
+  
     % learning update
     %w = w + eta*prioperror(i)*B(:,i_selected)';
     w = w + eta*visualerror(i)*B(:,i_selected)';

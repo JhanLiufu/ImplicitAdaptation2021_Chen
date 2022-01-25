@@ -1,7 +1,6 @@
 %% This code is for collective data processing & presentation.
 % By Charles Xu @ UCSD, adopted from "Controller data processing" by Hokin
 % Deng at JHU
-
 clear
 close all
 
