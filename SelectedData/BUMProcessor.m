@@ -22,13 +22,17 @@ parTarget = [0 0];
 
 filePath = matlab.desktop.editor.getActiveFilename;
 workingDirectory = erase(filePath,'BUMProcessor.m');
+cd(workingDirectory);
+if ~isfolder('FigOut')
+   mkdir(FigOut)
+end
 
-%% plot Relative Errors of All 3 Experiments & Overlapping Trajectories
 
-f1 = figure('Name','ErrorAll3Experiments','NumberTitle','off');
+%% Load all data and make plots
+fAll1 = figure('Name','ErrorAll3Experiments','NumberTitle','off');
 hold on;
 
-f2 = figure('Name','AllTrajectory','NumberTitle','off');
+fAll2 = figure('Name','AllTrajectory','NumberTitle','off');
 hold on;
 
 for i = 1:3 % 3 experiments
@@ -40,6 +44,7 @@ for i = 1:3 % 3 experiments
         currentSubj = strcat(currentExp, num2str(j), '/');
         cd(currentSubj);
 
+        % Plot all trajectories
         for k = 1:7 % 7 blocks per participant
             
             if (k <= 3)
@@ -48,7 +53,7 @@ for i = 1:3 % 3 experiments
                 target = cell2mat(struct2cell(load('Trial1.mat','targetarray')));
 
                 for l = 1:30 % 30 trials per block
-                    figure(f2)
+                    figure(fAll2);
 
                     currentTrial = strcat(currentBlock, 'Trial',num2str(l),'.mat');
                     trajectory = cell2mat(struct2cell(load(currentTrial,'trialtrajectory')));
@@ -97,7 +102,6 @@ for i = 1:3 % 3 experiments
             else
                 currentBlock = strcat(currentSubj, 'Block', num2str(k), '/');
                 cd(currentBlock);
-                target = cell2mat(struct2cell(load('Trial1.mat','targetarray')));
                 
                 for l = 1:30
                     currentTrial = strcat(currentBlock, 'Trial',num2str(l),'.mat');
@@ -154,10 +158,8 @@ for i = 1:3 % 3 experiments
             allTarget{1,i} = expTarget;
         end
 
-        %%
-        
-        % plot relative errors of all three experiments
-        figure(f1);
+        %% Plot relative errors of all three experiments
+        figure(fAll1);
         hold on;
 
         relError = parFinal - parTarget;
@@ -176,20 +178,21 @@ for i = 1:3 % 3 experiments
         axis equal;
 
         %% Absolute plot of Position
-        x = linspace(1,210,210);
-        figure;
+        f1 = figure('name','AbsolutePosition','NumberTitle','off','visible','off');
         plot(x, parFinal, "o", x, parTarget, "x");
         axis([0 210 -30 30]);
         xlabel("Trial Number");
         ylabel("Abs Degree");
+        saveas(f1,fullfile(workingDirectory,'figOut',strcat('Exp',num2str(i),'_Par',num2str(j),'_AbsErr')),'pdf');
 
-        figure;
+        f2 = figure('name','AbsolutePosition_DifferentColor','NumberTitle','off','visible','off');
         plot(x, parFinal, "-*", "Color","green");
         hold on;
         plot(x, parTarget, "-o", "Color","blue");
         axis([0 210 -30 30]);
         xlabel("Trial Number");
         ylabel("Abs Degree");
+        saveas(f2,fullfile(workingDirectory,'figOut',strcat('Exp',num2str(i),'_Par',num2str(j),'_AbsErr_Color')),'pdf');
 
         %% Plotting Error (anti-clock wise would be positive)
         error = [0 0];
@@ -197,10 +200,11 @@ for i = 1:3 % 3 experiments
         error(k) = parFinal(k) - parTarget(k);
         end
 
-        figure;
+        f3 = figure('name','RelativeError_Scattered','NumberTitle','off','visible','off');
         plot(x, error, "*", "Color","red");
         xlabel("Trial Number");
         ylabel("directional error: anti-clockwise would be positive");
+        saveas(f3,fullfile(workingDirectory,'figOut',strcat('Exp',num2str(i),'_Par',num2str(j),'_RelErr_Scattered')),'pdf');
 
         %% plot Abs Error
         abserr= [0 0];
@@ -215,22 +219,26 @@ for i = 1:3 % 3 experiments
             abserr(k) = abs(error(k));
         end 
 
-        figure;
+        f4 = figure('name','AbsoluteError','NumberTitle','off','visible','off');
         plot(x, abserr, "-o", "Color","blue");
         xlabel("Trial Number");
         ylabel("Absolute error");
         axis([0 220 0 50]);
+        saveas(f4,fullfile(workingDirectory,'figOut',strcat('Exp',num2str(i),'_Par',num2str(j),'_AbsErr')),'pdf');
+
 
         %% plot Above/Below Data
-        figure;
+        f5 = figure('name','Above/below','NumberTitle','off','visible','off');
         plot(x, aboveFinal, "*", x, aboveTarget, "o", "Color","red");
         axis([0 220 -40 40]);
         hold on;
         plot(x, belowFinal, "*", x, belowTarget, "o", "Color","blue");
         xlabel("Trial Number");
         ylabel("Above in red, below in blue");
+        saveas(f5,fullfile(workingDirectory,'figOut',strcat('Exp',num2str(i),'_Par',num2str(j),'_AboveAndBelow')),'pdf');
+        
         % Dimensional shift
-        figure;
+        f6 = figure('name','DimensionalShift','NumberTitle','off','visible','off');
         aboveshift = aboveFinal + 90;
         belowshit = belowFinal - 90;
         plot(x, aboveshift, "*", x, aboveTarget + 90, "o", "Color","red");
@@ -239,49 +247,59 @@ for i = 1:3 % 3 experiments
         axis([0 220 -200 200]);
         xlabel("Trial Number");
         ylabel("Shift for seperation");
+        saveas(f6,fullfile(workingDirectory,'figOut',strcat('Exp',num2str(i),'_Par',num2str(j),'_DimShift')),'pdf');
+        
         % Seperate Above and Below
-        figure;
+        f7 = figure('name','Above','NumberTitle','off','visible','off');
         plot(x, aboveFinal, "*", x, aboveTarget, "o", "Color","red");
         axis([0 220 -40 40]);
         xlabel("Trial Number");
         ylabel("Above");
-        figure; 
+        saveas(f7,fullfile(workingDirectory,'figOut',strcat('Exp',num2str(i),'_Par',num2str(j),'_Above')),'pdf');
+        
+        f8 = figure('name','Below','NumberTitle','off','visible','off');
         plot(x, belowFinal, "*", x, belowTarget, "o", "Color","blue");
         axis([0 220 -40 40]);
         xlabel("Trial Number");
         ylabel("Below");
+        saveas(f8,fullfile(workingDirectory,'figOut',strcat('Exp',num2str(i),'_Par',num2str(j),'_Below')),'pdf');
 
         %% Calculate Above/Below Error
-        figure;
+        f9 = figure('name','AbsoluteError_Above','NumberTitle','off','visible','off');
         aboveerrorabs = abs(aboveFinal - aboveTarget);
         plot(x, aboveerrorabs, "-o", "Color","red");
         axis([0 220 0 40]);
         xlabel("Trial Number");
         ylabel("Above Error Absolute");
+        saveas(f9,fullfile(workingDirectory,'figOut',strcat('Exp',num2str(i),'_Par',num2str(j),'_AbsErr_Above')),'pdf');
 
-        figure;
         % Below Error
+        f10 = figure('name','AbsoluteError_Below','NumberTitle','off','visible','off');
         belowerrorabs = abs(belowFinal - belowTarget);
         plot(x, belowerrorabs, "-o", "Color","green");
         axis([0 220 0 40]);
         xlabel("Trial Number");
         ylabel("Below Error Absolute");
+        saveas(f10,fullfile(workingDirectory,'figOut',strcat('Exp',num2str(i),'_Par',num2str(j),'_AbsErr_Below')),'pdf');
+
 
         %% Learning direction considering Above/Below Seperately
-        figure;
+        f11 = figure('name','RelativeError_Above','NumberTitle','off','visible','off');
         aber = aboveFinal - aboveTarget;
         plot(x, aber, "*", "Color","red");
         axis([0 220 -40 40]);
         xlabel("Trial Number");
         ylabel("Above Error Signed");
+        saveas(f11,fullfile(workingDirectory,'figOut',strcat('Exp',num2str(i),'_Par',num2str(j),'_RelErr_Above')),'pdf');
 
-        figure;
         % Below Error
+        f12 = figure('name','RelativeError_Below','NumberTitle','off','visible','off');
         beer = belowFinal - belowTarget;
         plot(x, beer, "o", "Color","blue");
         axis([0 220 -40 40]);
         xlabel("Trial Number");
         ylabel("Below Error Signed");
+        saveas(f12,fullfile(workingDirectory,'figOut',strcat('Exp',num2str(i),'_Par',num2str(j),'_RelErr_Below')),'pdf');
 
         % Compress aber to compare error with the previous one.
         counter = 1;
@@ -296,11 +314,12 @@ for i = 1:3 % 3 experiments
             end 
             counter = counter + 1;
         end
-        figure;
+        f13 = figure('name','LearningDirection_Above','NumberTitle','off','visible','off');
         plot(aberdirection);
         xlabel("Correction Number");
         ylabel("Correction Signed");
         title("Above Correction");
+        saveas(f13,fullfile(workingDirectory,'figOut',strcat('Exp',num2str(i),'_Par',num2str(j),'_LearnDir_Above')),'pdf');
 
         counter = 1;
         next = 1;
@@ -314,11 +333,12 @@ for i = 1:3 % 3 experiments
             end 
             counter = counter + 1;
         end
-        figure;
+        f14 = figure('name','LearningDirection_Below','NumberTitle','off','visible','off');
         plot(beerdirrection);
         xlabel("Correction Number");
         ylabel("Correction Signed");
         title("Below Correction");
+        saveas(f14,fullfile(workingDirectory,'figOut',strcat('Exp',num2str(i),'_Par',num2str(j),'_LearnDir_Below')),'pdf');
 
         % plot Them Together
         totalerrordirection = [0 0];
@@ -336,12 +356,13 @@ for i = 1:3 % 3 experiments
             end
             counter = counter + 1;
         end 
-        figure;
+        f15 = figure('name','LearningDirection_All','NumberTitle','off','visible','off');
         plot(totalerrordirection);
         xlabel("Correction Number");
         ylabel("Correction Signed");
         title("Above and Below Together Correction");
         axis([0 220 -60 60]);
+        saveas(f15,fullfile(workingDirectory,'figOut',strcat('Exp',num2str(i),'_Par',num2str(j),'_LearnDir_All')),'pdf');
 
         %% Section Specific Analysis
         blockfinaldata = zeros(7,30);
@@ -355,14 +376,13 @@ for i = 1:3 % 3 experiments
         beblockerrors = zeros(7,30);
 
         for k = 1:3
-            currentBlock = strcat(currentSubj, 'Block',num2str(k), '/');
+            currentBlock = strcat(currentSubj,'Block',num2str(k), '/');
             cd(currentBlock);
-            target = cell2mat(struct2cell(load('Trial1.mat','targetarray')));
-            figure; 
+            f16to18 = figure('name',strcat('Trajectory_NoPerturbation_Block',k),'NumberTitle','off','visible','off');
             hold on;
             title(currentBlock);
             for l = 1:30
-                currentTrial = strcat(currentBlock, 'Trial',num2str(l),'.mat');
+                currentTrial = strcat(currentBlock,'Trial',num2str(l),'.mat');
                 trajectory = cell2mat(struct2cell(load(currentTrial,'trialtrajectory')));
                 trajsize = size(trajectory);
                 final = trajsize(1);
@@ -397,6 +417,7 @@ for i = 1:3 % 3 experiments
                 end 
             end
             axis equal;
+            saveas(f16to18,fullfile(workingDirectory,'figOut',strcat('Exp',num2str(i),'_Par',num2str(j),'_Block',num2str(k),'_TrajNoPerturb')),'pdf');
             cd(workingDirectory);
         end
 
@@ -404,7 +425,7 @@ for i = 1:3 % 3 experiments
             currentBlock = strcat(currentSubj, 'Block',num2str(k), '/');
             cd(currentBlock);
             target = cell2mat(struct2cell(load('Trial1.mat','targetarray')));
-            figure; 
+            f19to22 = figure('name',strcat('Trajectory_WithPerturbation_Block',k),'NumberTitle','off','visible','off');
             hold on;
             title(currentBlock);
             for l = 1:30
@@ -427,13 +448,7 @@ for i = 1:3 % 3 experiments
                 plot(targety,targetx,"o");
                 targetx = targetx - xCenter;
                 targety = -(targety - yCenter);
-                % edit later
-        %         if i == 1
-        %             targety = -(targety - yCenter);
-        %         else
-        %             targety = targety - yCenter;
-        %         end
-                %
+                
                 blockfinaldata(k,l) = atand(finaly/finalx);
                 blocktargetdata(k,l) = atand(targety/targetx);
                 if (finalx > 0)
@@ -450,26 +465,33 @@ for i = 1:3 % 3 experiments
                 end 
             end
             axis equal;
+            saveas(f19to22,fullfile(workingDirectory,'figOut',strcat('Exp',num2str(i),'_Par',num2str(j),'_Block',num2str(k),'_TrajWPerturb')),'pdf');
             cd(workingDirectory);
         end
 
-        figure;
+        f23 = figure('name','Reaching_NoPerturbation','NumberTitle','off','visible','off');
         hold on;
         for k = 1:3
             x = linspace(1,30,30);
             plot(x, blockfinaldata(k,:));   
             plot(x, blocktargetdata(k,:), ':', 'LineWidth', 9);
         end 
-        figure;
+        saveas(f23,fullfile(workingDirectory,'figOut',strcat('Exp',num2str(i),'_Par',num2str(j),'_ReachNoPerturb')),'pdf');
+
+        
+        f24 = figure('name','Reaching_WPerturbation','NumberTitle','off','visible','off');
         hold on;
         for k = 4:7
             x = linspace(1,30,30);
             plot(x, blockfinaldata(k,:));   
             plot(x, blocktargetdata(k,:), ':', 'LineWidth', 9);
         end
-        cd ..;
+        saveas(f24,fullfile(workingDirectory,'figOut',strcat('Exp',num2str(i),'_Par',num2str(j),'_ReachWPerturb')),'pdf');
+
     end
-    cd ..;
 end
+
+saveas(fAll1,fullfile(workingDirectory,'figOut','RelErr_All3Expe'),'pdf');
+saveas(fAll2,fullfile(workingDirectory,'figOut','trajectory_All3Expe'),'pdf');
 
 
