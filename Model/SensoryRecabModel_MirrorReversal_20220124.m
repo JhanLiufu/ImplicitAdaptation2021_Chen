@@ -4,9 +4,9 @@
 xCenter = 960;
 yCenter = 540;
 
-sigma = linspace(6-4*1,6+5*1,10);
-eta = linspace(0.0001,0.0001+9*0.0001,10);
-sat_limit = 10;
+sigma = linspace(4,4+19*0.5,20);
+eta = linspace(0.0003,0.0003+19*0.00005,20);
+sat_limit = 15;
 seed_rng =48;
 
 sigma_noise = 2;
@@ -140,27 +140,48 @@ for i = 1:length(sigma)
     for j = 1:length(eta)
         current_perturbation = absoluteerror((i-1)*length(eta)+j,:);
         anova_mat = [abserr_allsubject_avg' current_perturbation];
-        anova_all(i,j) = anova1(anova_mat,group,'off');
+        anova_all(length(sigma)-(i-1),j) = anova1(anova_mat,group,'off');
     end
 end
 
-%% Plot color coded ANOVA 
-anova_intp = interp1([min(min(anova_all)),max(max(anova_all))],[0,256],anova_all);
+anova_min = min(min(anova_all));
+anova_max = max(max(anova_all));
+
+%% Plot color coded ANOVA
+color_upperbound = 256;
+color_lowerbound = 1;
+
+colorMap = parula(color_upperbound);
+colormap(colorMap);
+
+anova_intp = interp1([anova_min,anova_max], ...
+                     [color_lowerbound,color_upperbound], ...
+                     anova_all);
 image(anova_intp);
-txt = sprintf('%d Degree asymptote',sat_limit);
+
+yticks([2:2:20]); yticklabels([13:-1:4]);
+xticks([2:2:20]); xticklabels([3:1:12])
+
 xlabel('Learning rate, \eta(\times10^{-4})');
 ylabel('Basis function width, \sigma(\circ)');
-title(txt);
-colorMap = summer(256);
-colormap(colorMap);
-colorbar;
+txt = sprintf('%d Degree asymptote',sat_limit); title(txt);
+
+caxis([color_lowerbound,color_upperbound])
+cb = colorbar('XTick',[color_lowerbound,color_upperbound/2,color_upperbound], ...
+              'XTickLabel',{num2str(anova_min),num2str((anova_max+anova_min)/2),num2str(anova_max)});
+cb.Label.String = 'p-value (ANOVA)';
+
+% cd(root_dir);
+% cd('Results\');
+% filename = sprintf('Asymptote%dSimulationAnova',sat_limit);
+% figfilename = strcat(filename,'_Jhan','20220126','_1','.png');
+% saveas(gcf,figfilename);
 
 %% Save simulation results
-cd(root_dir);
-cd('Model\');
-filename = sprintf('Asymptote%dAnova',sat_limit);
+% cd(root_dir);
+% cd('Model\');
 % save(filename,"anova_all",'prioperror','abserr_allsubject_raw');
-cd(root_dir);
+% cd(root_dir);
 
 %% Scripts
 function y = sigmoid_saturation(x,sat_limit)
