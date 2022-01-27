@@ -544,29 +544,33 @@ for i = 2:3
     fFitWSubjWBlk = figure('name',strcat('ReachVSTarget_Both_WithinSubjectWithinBlock_Exp',num2str(i)),'NumberTitle','off','visible','on');
     hold on;
     for j = 1:8
-        xRaw = allTarget{1,i}{1,j}(1,181:210);
+        x = allTarget{1,i}{1,j}(1,181:210);
         if i ~= 2
             yRaw = allFinal{1,i}{1,j}(1,181:210);
         else 
             yRaw = -allFinal{1,i}{1,j}(1,181:210);
         end
         combinedXY = table(round(xRaw.'),yRaw.');
-        statsArrayXY = grpstats(combinedXY,'Var1');
-        x = table2array(statsArrayXY(:,1));
-        y = table2array(statsArrayXY(:,3));
-        p = polyfit(x,y,1);
-        y_fitted = polyval(p,x);
-        RGB = colorMap(j,:);
-        scatter(x,y,50,RGB,'filled','o');
-        plot(x,y_fitted,'color',RGB,'linewidth',1.5);
+        
     end
-    axis([-15 15 -30 30]);
-    plot(x,x,'--','color',[169,169,169]/255);
-    hold off
-    legend('location','bestoutside')
-    saveas(fFitWSubjWBlk,fullfile(workingDirectory,'figOut',strcat('RchVSTgt_Both_WSubjWBlk_','Exp',num2str(i))),'pdf');
 end
 
 %%
+
+colorMap = [[22,114,182]/255;[216,84,38]/255;[117,171,66]/255;[127,46,138]/255;[162,29,49]/255;
+    [234,177,32]/255;[182,194,154]/255;[222,156,83]/255;[201,186,131]/255;[117,36,35]/255;[224,160,158]/255];
+
+for k = 4:7
+        x = allTarget{1,i}{1,j}(1,(k-1)*30+1:k*30);
+        y = allFinal{1,i}{1,j}(1,(k-1)*30+1:k*30);
+        p = polyfit(x,y,1);
+        y_fitted = polyval(p,x);
+        RGB = colorMap(i,:);
+        scatter(x,y,50,RGB,'filled','o');
+        plot(x,y_fitted,'color',RGB,'linewidth',1.5);
+        axis([-15 15 -30 30]);
+        end
+        plot(x,x,'--','color',[169,169,169]/255);
+
 
 
