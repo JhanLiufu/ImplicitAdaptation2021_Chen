@@ -244,7 +244,7 @@ hold on;
 grid on;
 subplot(1,2,1);
 bar(up_slope);
-title('Expansion (with visual error)');
+title('Expansion');
 xlabel('Block Number');
 ylabel('Slope');
 
