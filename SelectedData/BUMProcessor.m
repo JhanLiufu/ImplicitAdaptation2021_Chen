@@ -554,17 +554,22 @@ for i = 2:3
         statsArrayXY = grpstats(combinedXY,'Var1');
         x = table2array(statsArrayXY(:,1));
         y = table2array(statsArrayXY(:,3));
-        p = polyfit(x,y,1);
+        p = polyfit(x,y,1); % Question: average first then fit, or fit first then average?
         y_fitted = polyval(p,x);
         RGB = colorMap(j,:);
         scatter(x,y,50,RGB,'filled','o');
         plot(x,y_fitted,'color',RGB,'linewidth',1.5);
+        
+        % Calculate MSE
+        mse = sum((y_fitted - y).^2)./60;
     end
     axis([-15 15 -30 30]);
     plot(x,x,'--','color',[169,169,169]/255);
     hold off
     legend('location','bestoutside')
     saveas(fFitWSubjWBlk,fullfile(workingDirectory,'figOut',strcat('RchVSTgt_Both_WSubjWBlk_','Exp',num2str(i))),'pdf');
+    
+    
 end
 
 %%
