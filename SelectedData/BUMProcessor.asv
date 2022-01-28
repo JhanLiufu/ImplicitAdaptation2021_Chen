@@ -109,7 +109,6 @@ for i = 1:3 % 3 experiments
                 cd(currentBlock);
                 
                 for l = 1:30
-                    currentTrial = strcat(currentBlock, 'Trial',num2str(l),'.mat');
                     currentTrial = fullfile(currentBlock,strcat('Trial',num2str(l),'.mat'));
                     trajectory = cell2mat(struct2cell(load(currentTrial,'trialtrajectory')));
                     trajsize = size(trajectory);
@@ -188,18 +187,27 @@ for i = 1:3 % 3 experiments
         
         if i == 1            
             figure(fSec1);
+            hold on;
             plot(x,relError,'-o','Color','red');
+            hold off;
+            axis([0 210 -60 60]);
             
             figure(fSec2);
-            plot(x,relError,'-o','Color','green');
+            hold on;
+            plot(x,relError,'-o','Color','red');
+            hold off;
             
         elseif i == 2
             figure(fSec2);
+            hold on;
             plot(x,relError,'-o','Color','green');
+            hold off;
             
         else
             figure(fSec3);
+            hold on;
             plot(x,relError,'-o','Color','blue');
+            hold off;
             
         end
 
@@ -408,7 +416,7 @@ for i = 1:3 % 3 experiments
             hold on;
             title(currentBlock);
             for l = 1:30
-                currentTrial = strcat(currentBlock,'Trial',num2str(l),'.mat');
+                currentTrial = fullfile(currentBlock,strcat('Trial',num2str(l),'.mat'));
                 trajectory = cell2mat(struct2cell(load(currentTrial,'trialtrajectory')));
                 trajsize = size(trajectory);
                 final = trajsize(1);
@@ -455,7 +463,7 @@ for i = 1:3 % 3 experiments
             hold on;
             title(currentBlock);
             for l = 1:30
-                currentTrial = strcat(currentBlock, 'Trial',num2str(l),'.mat');
+                currentTrial = fullfile(currentBlock,strcat('Trial',num2str(l),'.mat'));
                 trajectory = cell2mat(struct2cell(load(currentTrial,'trialtrajectory')));
                 trajsize = size(trajectory);
                 final = trajsize(1);
@@ -566,6 +574,9 @@ end
 % Fit within subject, within block for the last block of experiments 2 and
 % 3
 
+colorMap = [[22,114,182]/255;[216,84,38]/255;[117,171,66]/255;[127,46,138]/255;[162,29,49]/255;
+     [234,177,32]/255;[182,194,154]/255;[222,156,83]/255;[201,186,131]/255;[117,36,35]/255;[224,160,158]/255];
+
 for i = 2:3
     fFitWSubjWBlk = figure('name',strcat('ReachVSTarget_Both_WithinSubjectWithinBlock_Exp',num2str(i)),'NumberTitle','off','visible','on');
     hold on;
@@ -594,7 +605,6 @@ for i = 2:3
     hold off
     legend('location','bestoutside')
     % saveas(fFitWSubjWBlk,fullfile(workingDirectory,'figOut',strcat('RchVSTgt_Both_WSubjWBlk_','Exp',num2str(i))),'pdf');
-    
     
 end
 

@@ -190,23 +190,27 @@ for i = 1:3 % 3 experiments
             hold on;
             plot(x,relError,'-o','Color','red');
             hold off;
+            axis([0 210 -60 60]);
             
             figure(fSec2);
             hold on;
             plot(x,relError,'-o','Color','red');
             hold off;
+            axis([0 210 -60 60]);
             
         elseif i == 2
             figure(fSec2);
             hold on;
             plot(x,relError,'-o','Color','green');
             hold off;
+            axis([0 210 -60 60]);
             
         else
             figure(fSec3);
             hold on;
             plot(x,relError,'-o','Color','blue');
             hold off;
+            axis([0 210 -60 60]);
             
         end
 
