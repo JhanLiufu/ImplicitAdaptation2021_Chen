@@ -26,9 +26,9 @@ parTarget = [0 0];
 filePath = matlab.desktop.editor.getActiveFilename;
 workingDirectory = erase(filePath,'BUMProcessor.m');
 cd(workingDirectory);
-if ~isfolder('FigOut')
-   mkdir(FigOut)
-end
+% if ~isfolder('FigOut')
+%    mkdir(FigOut)
+% end
 
 %% Load all data and make plots
 
