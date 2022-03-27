@@ -244,20 +244,19 @@ hold on;
 grid on;
 subplot(1,2,1);
 bar(up_slope);
-title('Expansion');
+title('Expansion (with visual error)');
 xlabel('Block Number');
 ylabel('Slope');
 
 subplot(1,2,2);
 bar(abs(up_offset));
-title('Degree of Shift');
+title('Degree of Sh');
 xlabel('Block Number');
 ylabel('Abs. of offset');
 
 cd('Results\');
 %saveas(gcf,'MirrorReversalModelSlopeOffset_LauFoo_20220116_1.png');
 %saveas(gcf,'MirrorReversalModelSlopeOffset_LauFoo_20220116_2.png');
-saveas(gcf,'RotationModelSlopeOffset_LauFoo_20220128_1.png');
 cd(root_dir);
 
 function y = sigmoid_saturation(x,sat_limit)
