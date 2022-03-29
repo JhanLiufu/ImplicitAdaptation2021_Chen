@@ -611,7 +611,7 @@ for i = 2:3
     
 end
 
-save('allData.mat','allFinal','allTarget')
+save('allData.mat",')
 
 %%
 
