@@ -5,6 +5,8 @@
 % By Charles Xu @ UCSD
 %
 %% Initialize
+clear
+close all
 load('allData.mat')
 
 %% Figure 1 - dot plot for relative error of exp 1 and 2
@@ -26,7 +28,7 @@ for i = 1:8
     p2 = plot(x,y,'.b','Color','#D95319','MarkerSize',10);
 end
 
-xline([60 90],'--')
+xline(90,'--')
 yline(0,'--')
 xlim([0 210])
 ylim([-70 70])
@@ -60,7 +62,7 @@ p2 = plot(x,y,'.-','Color','#D95319','MarkerSize',10);
 
 clear x y
 
-xline([60 90],'--')
+xline(90,'--')
 yline(0,'--')
 xlim([0 210])
 ylim([0 35])
@@ -114,7 +116,7 @@ for i = 1:8
     p2 = plot(x,y,'.b','Color','#D95319','MarkerSize',10);
 end
 
-xline([60 90],'--')
+xline(90,'--')
 yline(0,'--')
 xlim([0 210])
 ylim([-70 70])
@@ -148,7 +150,7 @@ p2 = plot(x,y,'.-','Color','#D95319','MarkerSize',10);
 
 clear x y
 
-xline([60 90],'--')
+xline(90,'--')
 yline(0,'--')
 xlim([0 210])
 ylim([0 35])
@@ -253,8 +255,8 @@ stdTest3 = std(test3);
 exp3d = computeCohen_d(baseline3,test3); % Cohen's d for baseline vs test
 
 %% Figure 1 - barplot for experiments 1 and 2
-xAxis = categorical({'Baseline' 'Test'});
-xAxis = reordercats(xAxis,{'Baseline' 'Test'});
+xAxis = categorical({'Experiment 1' 'Experiment 2'});
+xAxis = reordercats(xAxis,{'Experiment 1' 'Experiment 2'});
 bars12 = [meanBaseline1 meanTest1; meanBaseline2 meanTest2];
 err12 = [stdBaseline1 stdTest1; stdBaseline2 stdTest2];
 
@@ -269,11 +271,12 @@ for i = 1:nbars
 end
 
 errorbar(xErr',bars12,err12,'Color','k','LineStyle','none')
+legend({'Baseline' 'Test'})
 hold off
 
 %% Figure 2 - barplot for experiments 2 and 3
-xAxis = categorical({'Baseline' 'Test'});
-xAxis = reordercats(xAxis,{'Baseline' 'Test'});
+xAxis = categorical({'Experiment 2' 'Experiment 3'});
+xAxis = reordercats(xAxis,{'Experiment 2' 'Experiment 3'});
 bars23 = [meanBaseline2 meanTest2; meanBaseline3 meanTest3];
 err23 = [stdBaseline2 stdTest2; stdBaseline3 stdTest3];
 
@@ -288,6 +291,7 @@ for i = 1:nbars
 end
 
 errorbar(xErr',bars23,err23,'Color','k','LineStyle','none')
+legend({'Baseline' 'Test'})
 hold off
 
 %% Two-way ANOVA for time (baseline and test) and experiments
@@ -315,10 +319,20 @@ for i = 1:8
 end
 
 % Two-way ANOVA for experiments 1 vs 2
-ANOVAData12 = [baseline1 latetest1; baseline2 latetest2]';
+ANOVAData12 = [baseline1 latetest1; baseline2 latetest2]'; % Columns: experiment; rows: time
 [exp12p,exp12table,exp12stats] = anova2(ANOVAData12,8);
 
 % Two-way ANOVA for experiments 2 vs 3
-ANOVAData23 = [baseline2 latetest2; baseline3 latetest3]';
+ANOVAData23 = [baseline2 latetest2; baseline3 latetest3]'; % Columns: experiment; rows: time
 [exp23p,exp23table,exp23stats] = anova2(ANOVAData23,8);
 
+%% Save figures
+
+saveas(f1dot,'F1A.pdf')
+saveas(f1line,'F1B.pdf')
+saveas(f1histRel,'F1C.pdf')
+saveas(f12bar,'F1D.pdf')
+saveas(f2dot,'F2A.pdf')
+saveas(f2line,'F2B.pdf')
+saveas(f2histRel,'F2C.pdf')
+saveas(f23bar,'F2D.pdf')
